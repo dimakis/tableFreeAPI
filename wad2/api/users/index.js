@@ -28,7 +28,7 @@ async function userExists(email) {
 }
 
 // check password
-async function isAuthenticated({ email, password }) {
+async function isAuthenticated( email, password ) {
   const user = await User.findByEmail(email);
   user.comparePassword(password, (err, isMatch) => {
     return isMatch && !err ? true : false;
@@ -36,9 +36,9 @@ async function isAuthenticated({ email, password }) {
 }
 
 
-router.get('/', (req, res) => {
-    User.find().then(users =>  res.status(200).json(users));
-});
+// router.get('/', (req, res) => {
+//     User.find().then(users =>  res.status(200).json(users));
+// });
 //   return userdb.users.findIndex(user => user.email === email && user.password === password) !== -1
 
 // login autherization from original attempt
@@ -63,6 +63,43 @@ router.post("/auth/login", async (req, res, next) => {
     res.status(200).json({ access_token });
   }
 });
+
+// using labs authenticate
+
+// router.post('/auth/login', async (req, res, next) => {
+//   if (!req.body.email || !req.body.password) {
+//     res.status(401).json({
+//       success: false,
+//       msg: 'Please pass username and password.',
+//     });
+//   }
+//   if (req.query.action === 'register') {
+//     await User.create(req.body).catch(next);
+//     res.status(201).json({
+//       code: 201,
+//       msg: 'Successful created new user.',
+//     });
+//   } else {
+//     const user = await User.findEmail(req.body.email).catch(next);
+//       if (!user) return res.status(401).json({ code: 401, msg: 'Authentication failed. User not found.' });
+//       user.comparePassword(req.body.password, (err, isMatch) => {
+//         if (isMatch && !err) {
+//           // if user is found and password is right create a token
+//           const token = jwt.sign(user.email, SECRET_KEY);
+//           // return the information including token as JSON
+//           res.status(200).json({
+//             success: true,
+//             token: 'BEARER ' + token,
+//           });
+//         } else {
+//           res.status(401).json({
+//             code: 401,
+//             msg: 'Authentication failed. Wrong password.'
+//           });
+//         }
+//       });
+//     }
+// });
 
 // introducing registering of a new user, in labs this is combined with router.post('/') i have it seperate as it stands
 //     if (req.query.action === 'register') {
