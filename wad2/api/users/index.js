@@ -27,12 +27,18 @@ async function userExists(email) {
   return User.userExistsByEmail(email) > 0 ? true : false;
 }
 
-// check password
-async function isAuthenticated( email, password ) {
-  const user = await User.findByEmail(email);
-  user.comparePassword(password, (err, isMatch) => {
-    return isMatch && !err ? true : false;
-  });
+async function isAuthenticated(email, password) {
+    const user = await User.findByEmail(email);
+    console.log("user: ", user);
+    console.log("user.password === password? : ", user.password === password);
+    return user.password === password ? true : false;
+// }
+// // check password
+// async function isAuthenticated( email, password ) {
+//   const user = await User.findByEmail(email);
+//   user.comparePassword(password, (err, isMatch) => {
+//     return isMatch && !err ? true : false;
+//   });
 }
 
 
@@ -41,28 +47,31 @@ async function isAuthenticated( email, password ) {
 // });
 //   return userdb.users.findIndex(user => user.email === email && user.password === password) !== -1
 
-// login autherization from original attempt
-router.post("/auth/login", async (req, res, next) => {
-  // let obj = JSON.parse({req})
-  // console.log('@server, post body.email: ' + {obj})
-  const { email, password } = req;
-  // const email = req.body.email
-  // const password = req.body.password
-  console.log("@server, post body.email: " + req.body );
-  if (isAuthenticated({ email, password }) !== true) {
-    const status = 401;
-    const email1 = JSON.stringify({email})
-    const password1 = JSON.stringify(password)
-  console.log("@server, post email1: " + email1);
-    const message = "Incorrect email " + email1 + " or password " + password1;
-    res.status(status).json({ status, message });
-    return;
-  } else {
-    const access_token = createToken({ email, password });
-    // console.log('@server, token: ' + json({access_token}))
-    res.status(200).json({ access_token });
-  }
+router.post("/auth/login", (req, res) => {
+    // let obj = JSON.parse({req})
+
+    // const { email, password } = req
+    const email = req.body.email;
+    const password = req.body.password;
+    console.log("@server, post body.email: " + req.body.email);
+    // console.log("@server, isAuthenticated: " + isAuthenticated(email,password));
+
+    if (isAuthenticated(email, password) === false) {
+        const status = 401;
+        const message = "Incorrect email or password";
+        res.status(status).json({ status, message });
+        return;
+    } else {
+        const user = User.findByEmail(email);
+        const token = Buffer.from(email + 'utf8').toString('base64')
+        console.log("@server, token: " + token);
+        const access_token = jwt.sign({token}, SECRET_KEY, {expiresIn} )
+        // const access_token = createToken()   //email); //, password);
+        // console.log('@server, token: ' + json({access_token}))
+        res.status(200).json({ access_token });
+    }
 });
+// login autherization from original attempt
 
 // using labs authenticate
 

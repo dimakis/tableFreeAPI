@@ -1,9 +1,7 @@
-// Load the http module to create an http server.
-import http from "http";
 import dotenv from "dotenv";
 import express from "express";
 import "./db.js";
-import authRouter from "./api/users/";
+import authRouter from "./api/users/index.js";
 import User from "./api/users/userModel.js";
 const fs = require("file-system");
 const bodyParser = require("body-parser");
@@ -29,7 +27,7 @@ const expiresIn = "1h";
 
 // Create a token from a payload
 function createToken(payload) {
-    return jwt.sign(payload, SECRET_KEY, expiresIn );
+    return jwt.sign(payload, SECRET_KEY, {expiresIn} );
 }
 
 // Verify the token
@@ -52,31 +50,33 @@ async function isAuthenticated(email, password) {
 //   return userdb.users.findIndex(user => user.email === email && user.password === password) !== -1
 // }
 
-server.post("/auth/login", (req, res) => {
-    // let obj = JSON.parse({req})
+// fully functioning
+// server.post("/auth/login", (req, res) => {
+//     // let obj = JSON.parse({req})
 
-    // const { email, password } = req
-    const email = req.body.email;
-    const password = req.body.password;
-    console.log("@server, post body.email: " + req.body.email);
-    // console.log("@server, isAuthenticated: " + isAuthenticated(email,password));
+//     // const { email, password } = req
+//     const email = req.body.email;
+//     const password = req.body.password;
+//     console.log("@server, post body.email: " + req.body.email);
+//     // console.log("@server, isAuthenticated: " + isAuthenticated(email,password));
 
-    if (isAuthenticated(email, password) === false) {
-        const status = 401;
-        const message = "Incorrect email or password";
-        res.status(status).json({ status, message });
-        return;
-    } else {
-        const user = User.findByEmail(email);
-        const token = Buffer.from(email + 'utf8').toString('base64')
+//     if (isAuthenticated(email, password) === false) {
+//         const status = 401;
+//         const message = "Incorrect email or password";
+//         res.status(status).json({ status, message });
+//         return;
+//     } else {
+//         const user = User.findByEmail(email);
+//         const token = Buffer.from(email + 'utf8').toString('base64')
+//         console.log("@server, token: " + token);
+//         const access_token = jwt.sign({token}, SECRET_KEY, {expiresIn} )
+//         // const access_token = createToken()   //email); //, password);
+//         // console.log('@server, token: ' + json({access_token}))
+//         res.status(200).json({ access_token });
+//     }
+// });
 
-        console.log("@server, token: " + token);
-        const access_token = jwt.sign({token}, SECRET_KEY, {expiresIn} )
-        // const access_token = createToken()   //email); //, password);
-        // console.log('@server, token: ' + json({access_token}))
-        res.status(200).json({ access_token });
-    }
-});
+
 
 // server.use(/^(?!\/auth).*$/,  (req, res, next) => {
 //   if (req.headers.authorization === undefined || req.headers.authorization.split(' ')[0] !== 'Bearer') {
@@ -99,9 +99,9 @@ server.post("/auth/login", (req, res) => {
 
 // ######### fin old code
 // server.use('/', authRouter)
-// server.use('/auth/login', authRouter)
+server.use('/', authRouter)
 // next line is how code should be once its all split up
-// server.use(express.static('public'));
+server.use(express.static('public'));
 
 server.listen(port, () => {
     // Put a friendly message on the terminal
