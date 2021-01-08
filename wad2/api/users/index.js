@@ -88,7 +88,7 @@ router.put('/:id',  (req, res, next) => {
       _id: req.params.id,
     }, req.body, {
       upsert: false,
-    })
+    }).catch(next)
     .then(user => res.json(200, user));
 });
 
