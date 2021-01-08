@@ -5,6 +5,7 @@ import authRouter from "./api/users/index.js";
 import User from "./api/users/userModel.js";
 import tableRouter from './api/tables/index.js'
 
+const cors = require('cors')
 const fs = require("file-system");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
@@ -13,6 +14,7 @@ const server = express();
 
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded());
+server.use(cors());
 dotenv.config();
 
 const port = process.env.PORT;
