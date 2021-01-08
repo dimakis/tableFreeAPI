@@ -80,6 +80,19 @@ if (req.query.action === 'register') {
         res.status(200).json({ access_token });
     }
 }});
+
+// Update a user
+router.put('/:id',  (req, res, next) => {
+    if (req.body._id) delete req.body._id;
+     User.update({
+      _id: req.params.id,
+    }, req.body, {
+      upsert: false,
+    })
+    .then(user => res.json(200, user));
+});
+
+
 // login autherization from original attempt
 
 // using labs authenticate
