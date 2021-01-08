@@ -47,9 +47,18 @@ async function isAuthenticated(email, password) {
 // });
 //   return userdb.users.findIndex(user => user.email === email && user.password === password) !== -1
 
-router.post("/auth/login", (req, res) => {
-    // let obj = JSON.parse({req})
+router.post("/auth/login", async (req, res, next) => {
 
+if (req.query.action === 'register') {
+  console.log("@server, action === register, req.body: " + JSON.stringify(req.body));
+  await User.create(req.body).catch(next);
+  console.log("@server, after User.create: ");
+  res.status(201).json({
+    code: 201,
+    msg: 'Successful created new user.',
+  });
+} else {
+    // let obj = JSON.parse({req})
     // const { email, password } = req
     const email = req.body.email;
     const password = req.body.password;
@@ -70,7 +79,7 @@ router.post("/auth/login", (req, res) => {
         // console.log('@server, token: ' + json({access_token}))
         res.status(200).json({ access_token });
     }
-});
+}});
 // login autherization from original attempt
 
 // using labs authenticate
@@ -111,11 +120,16 @@ router.post("/auth/login", (req, res) => {
 // });
 
 // introducing registering of a new user, in labs this is combined with router.post('/') i have it seperate as it stands
-//     if (req.query.action === 'register') {
+// router.post('auth/register', asyn ( req, res, next )  {
+// if (req.query.action === 'register') {
 //   await User.create(req.body).catch(next);
 //   res.status(201).json({
 //     code: 201,
 //     msg: 'Successful created new user.',
 //   });
 // } else {
+
+// )
+
+
 export default router;

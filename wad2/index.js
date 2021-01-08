@@ -3,6 +3,8 @@ import express from "express";
 import "./db.js";
 import authRouter from "./api/users/index.js";
 import User from "./api/users/userModel.js";
+import tableRouter from './api/tables/index.js'
+
 const fs = require("file-system");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
@@ -100,6 +102,9 @@ async function isAuthenticated(email, password) {
 // ######### fin old code
 // server.use('/', authRouter)
 server.use('/', authRouter)
+
+
+server.use('/', tableRouter)
 // next line is how code should be once its all split up
 server.use(express.static('public'));
 
