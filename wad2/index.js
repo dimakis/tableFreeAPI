@@ -4,6 +4,7 @@ import "./db.js";
 import authRouter from "./api/users/index.js";
 import User from "./api/users/userModel.js";
 import tableRouter from './api/tables/index.js'
+import passport from './authenticate/index.js'
 
 const cors = require('cors')
 const fs = require("file-system");
@@ -15,6 +16,8 @@ const server = express();
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded());
 server.use(cors());
+server.use(passport.initialize())
+// server.use(passport)
 dotenv.config();
 
 const port = process.env.PORT;
@@ -106,7 +109,7 @@ async function isAuthenticated(email, password) {
 server.use('/', authRouter)
 
 
-server.use('/', tableRouter)
+server.use('/', passport.authenticate('jwt', { session: false }), tableRouter);
 // next line is how code should be once its all split up
 server.use(express.static('public'));
 

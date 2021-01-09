@@ -47,6 +47,13 @@ async function isAuthenticated(email, password) {
 // });
 //   return userdb.users.findIndex(user => user.email === email && user.password === password) !== -1
 
+// start of new register
+// router.post('auth/register', async(req, res, next) => {
+
+// })
+
+
+
 router.post("/auth/login", async (req, res, next) => {
 
 if (req.query.action === 'register') {
@@ -81,7 +88,7 @@ if (req.query.action === 'register') {
     }
 }});
 
-// Update a user
+// Update a user, functional 
 router.put('/:id',  (req, res, next) => {
     if (req.body._id) delete req.body._id;
      User.update({
