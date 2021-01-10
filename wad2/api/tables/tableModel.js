@@ -17,6 +17,9 @@ TableSchema.statics.getTables = function () {
     return this.find({})
 }
 
-// TableSchema.me
+TableSchema.statics.findByTableName = function(tableName) {
+    // console.log('@tables.tablemodel, findbytablename table: ' + JSON.stringify(tableName))
+  return this.findOne( { tableName: tableName  });
+}
 
 export default mongoose.model('Table', TableSchema);

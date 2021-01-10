@@ -16,4 +16,17 @@ router.post('/addtable', async ( req, res, next ) => {
     })
 })
 
+router.delete('/deletetable/:id', async ( req, res, next  ) => {
+    const table = await Table.findByTableName(req.body.tableName)
+    console.log('@tables.index, delete:id table: ' + JSON.stringify(table))
+    await Table.findByIdAndDelete(table._id, function(err) {
+        if(err) console.log(err);
+        console.log('Successfully Deleted')
+    }).catch(next)
+    res.status(200).json({
+        code: 200,
+        msg: 'delete, great success'
+    })
+})
+
 export default router;
