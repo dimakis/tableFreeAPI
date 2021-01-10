@@ -4,11 +4,11 @@ const Schema = mongoose.Schema;
 
 const TableSchema = new Schema({
   tableName: { type: String, unique: true, required: true},
-  timeSlots: {
+  timeSlots: [{
       time: {type: String, required: true },
       bookedBy: {type: String, required: false },
       isBooked: {type: Boolean, required: false }
-  }  
+  }]  
 //  favourites: [{type: mongoose.Schema.Types.ObjectId, ref: 'Movies'}]
 });
 
@@ -16,5 +16,7 @@ const TableSchema = new Schema({
 TableSchema.statics.getTables = function () {
     return this.find({})
 }
+
+// TableSchema.me
 
 export default mongoose.model('Table', TableSchema);

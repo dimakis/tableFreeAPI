@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon --exec babel-node index.js"
+    "start": "nodemon --exec babel-node index.js",
+    "dev": "concurrently \"npm start\" \"/usr/bin/caddy reverse-proxy --from localhost:443 --to localhost:8088\""
   },
   "author": "Dimitri Saridakis",
   "license": "ISC",

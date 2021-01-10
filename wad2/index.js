@@ -6,17 +6,19 @@ import User from "./api/users/userModel.js";
 import tableRouter from './api/tables/index.js'
 import passport from './authenticate/index.js'
 
+const { auth } = require ( 'express-openid-connect' )
 const cors = require('cors')
 const fs = require("file-system");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
-
 const server = express();
 
 server.use(bodyParser.json());
+server.use(bodyParser.urlencoded({ extended: true }));
 server.use(bodyParser.urlencoded());
 server.use(cors());
-server.use(passport.initialize())
+// server.use(auth());
+// server.use(passport.initialize())
 // server.use(passport)
 dotenv.config();
 
@@ -109,7 +111,7 @@ async function isAuthenticated(email, password) {
 server.use('/', authRouter)
 
 
-server.use('/', passport.authenticate('jwt', { session: false }), tableRouter);
+server.use('/', tableRouter) //passport.authenticate('jwt', { session: false }), tableRouter);
 // next line is how code should be once its all split up
 server.use(express.static('public'));
 
