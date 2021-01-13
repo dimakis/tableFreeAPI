@@ -6,6 +6,7 @@ const router = express.Router()
 router.get('/tables', async (req, res, next) => {
     await Table.getTables().catch(next).then(tables => res.status(200).json(tables)
     )
+    console.log('@tables.index, tables:' + tables)
 })
 
 router.post('/addtable', async ( req, res, next ) => {
@@ -18,7 +19,6 @@ router.post('/addtable', async ( req, res, next ) => {
 
 router.delete('/deletetable/:id', async ( req, res, next  ) => {
     const table = await Table.findByTableName(req.body.tableName)
-    console.log('@tables.index, delete:id table: ' + JSON.stringify(table))
     await Table.findByIdAndDelete(table._id, function(err) {
         if(err) console.log(err);
         console.log('Successfully Deleted')

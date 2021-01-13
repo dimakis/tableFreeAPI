@@ -83,8 +83,11 @@ if (req.query.action === 'register') {
         console.log("@server, token: " + token);
         const access_token = jwt.sign({token}, SECRET_KEY, {expiresIn} )
         // const access_token = createToken()   //email); //, password);
+        // const bearerToken = 'Bearer ' + access_token
         // console.log('@server, token: ' + json({access_token}))
-        res.status(200).json({ access_token });
+        res.status(200).json({
+          success:true,
+          token: 'BEARER ' + access_token });
     }
 }});
 

@@ -18,7 +18,6 @@ TableSchema.statics.getTables = function () {
 }
 
 TableSchema.statics.findByTableName = function(tableName) {
-    // console.log('@tables.tablemodel, findbytablename table: ' + JSON.stringify(tableName))
   return this.findOne( { tableName: tableName  });
 }
 

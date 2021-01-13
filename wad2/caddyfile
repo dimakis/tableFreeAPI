@@ -1,0 +1,14 @@
+{
+    auto_https off|disable_redirects,
+	"disable": false,
+	"disable_redirects": true,
+	"skip": [""],
+	"skip_certificates": [""],
+	"ignore_loaded_certificates": false
+}
+
+
+
+localhost
+
+reverse_proxy localhost:8088
