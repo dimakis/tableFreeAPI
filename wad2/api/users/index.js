@@ -2,6 +2,9 @@ import express from "express";
 import User from "./userModel";
 import jwt from "jsonwebtoken";
 // import movieModel from '../movies/movieModel.js'
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 // i used server in my first version, trying express.Router now
 const router = express.Router();
@@ -81,13 +84,13 @@ if (req.query.action === 'register') {
         const user = User.findByEmail(email);
         const token = Buffer.from(email + 'utf8').toString('base64')
         console.log("@server, token: " + token);
-        const access_token = jwt.sign({token}, SECRET_KEY, {expiresIn} )
+        // const access_token = jwt.sign(email, process.env.SECRET_KEY , { expiresIn } )
+        const access_token = jwt.sign({token}, process.env.SECRET_KEY , { expiresIn } )
         // const access_token = createToken()   //email); //, password);
         // const bearerToken = 'Bearer ' + access_token
-        // console.log('@server, token: ' + json({access_token}))
         res.status(200).json({
           success:true,
-          token: 'BEARER ' + access_token });
+          token: 'bearer ' + access_token });
     }
 }});
 

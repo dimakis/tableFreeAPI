@@ -6,7 +6,7 @@ import User from "./api/users/userModel.js";
 import tableRouter from './api/tables/index.js'
 import passport from './authenticate/index.js'
 
-const { auth } = require ( 'express-openid-connect' )
+//const { auth } = require ( 'express-openid-connect' )
 const cors = require('cors')
 const fs = require("file-system");
 const bodyParser = require("body-parser");
@@ -111,7 +111,7 @@ async function isAuthenticated(email, password) {
 server.use('/', authRouter)
 
 
-server.use('/', passport.authenticate('jwt', { session: false }), tableRouter);
+server.use('/',tableRouter)// passport.authenticate('jwt', { session: false }), tableRouter);
 // next line is how code should be once its all split up
 server.use(express.static('public'));
 // next line is for trusting the proxy for https
