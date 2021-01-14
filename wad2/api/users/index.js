@@ -45,6 +45,46 @@ async function isAuthenticated(email, password) {
 }
 
 
+// Register OR authenticate a user
+router.post('/auth/login', async (req, res, next) => {
+  if (!req.body.email || !req.body.password) {
+    console.log('@not user or password, req: ' + req.body)
+    res.status(401).json({
+      success: false,
+      msg: 'Please pass username and password.',
+    });
+  }
+  if (req.query.action === 'register') {
+    console.log('@in register before User.create')
+    await User.create(req.body).catch(next);
+    console.log('@in register')
+    res.status(201).json({
+      code: 201,
+      msg: 'Successful created new user.',
+    });
+  } else {
+    const user = await User.findByEmail(req.body.email).catch(next);
+    console.log('@authenticate, user: ' + JSON.stringify(user))
+    if (!user) return res.status(401).json({ code: 401, msg: 'Authentication failed. User not found.' });
+    user.comparePassword(req.body.password, (err, isMatch) => {
+      if (isMatch && !err) {
+        // if user is found and password is right create a token
+        const token = jwt.sign(user.email, process.env.SECRET_KEY);
+        // return the information including token as JSON
+        res.status(200).json({
+          success: true,
+          token: 'Bearer ' + token,
+        });
+      } else {
+        res.status(401).json({
+          code: 401,
+          msg: 'Authentication failed. Wrong password.'
+        });
+      }
+    });
+  }
+});
+
 // router.get('/', (req, res) => {
 //     User.find().then(users =>  res.status(200).json(users));
 // });
@@ -56,43 +96,43 @@ async function isAuthenticated(email, password) {
 // })
 
 
+// legit 
+// router.post("/auth/login", async (req, res, next) => {
 
-router.post("/auth/login", async (req, res, next) => {
+// if (req.query.action === 'register') {
+//   console.log("@server, action === register, req.body: " + JSON.stringify(req.body));
+//   await User.create(req.body).catch(next);
+//   console.log("@server, after User.create: ");
+//   res.status(201).json({
+//     code: 201,
+//     msg: 'Successful created new user.',
+//   });
+// } else {
+//     // let obj = JSON.parse({req})
+//     // const { email, password } = req
+//     const email = req.body.email;
+//     const password = req.body.password;
+//     console.log("@server, post body.email: " + req.body.email);
+//     // console.log("@server, isAuthenticated: " + isAuthenticated(email,password));
 
-if (req.query.action === 'register') {
-  console.log("@server, action === register, req.body: " + JSON.stringify(req.body));
-  await User.create(req.body).catch(next);
-  console.log("@server, after User.create: ");
-  res.status(201).json({
-    code: 201,
-    msg: 'Successful created new user.',
-  });
-} else {
-    // let obj = JSON.parse({req})
-    // const { email, password } = req
-    const email = req.body.email;
-    const password = req.body.password;
-    console.log("@server, post body.email: " + req.body.email);
-    // console.log("@server, isAuthenticated: " + isAuthenticated(email,password));
-
-    if (isAuthenticated(email, password) === false) {
-        const status = 401;
-        const message = "Incorrect email or password";
-        res.status(status).json({ status, message });
-        return;
-    } else {
-        const user = User.findByEmail(email);
-        const token = Buffer.from(email + 'utf8').toString('base64')
-        console.log("@server, token: " + token);
-        // const access_token = jwt.sign(email, process.env.SECRET_KEY , { expiresIn } )
-        const access_token = jwt.sign({token}, process.env.SECRET_KEY , { expiresIn } )
-        // const access_token = createToken()   //email); //, password);
-        // const bearerToken = 'Bearer ' + access_token
-        res.status(200).json({
-          success:true,
-          token: 'bearer ' + access_token });
-    }
-}});
+//     if (isAuthenticated(email, password) === false) {
+//         const status = 401;
+//         const message = "Incorrect email or password";
+//         res.status(status).json({ status, message });
+//         return;
+//     } else {
+//         const user = User.findByEmail(email);
+//         const token = Buffer.from(email + 'utf8').toString('base64')
+//         console.log("@server, token: " + token);
+//         // const access_token = jwt.sign(email, process.env.SECRET_KEY , { expiresIn } )
+//         const access_token = jwt.sign({token}, process.env.SECRET_KEY , { expiresIn } )
+//         // const access_token = createToken()   //email); //, password);
+//         // const bearerToken = 'Bearer ' + access_token
+//         res.status(200).json({
+//           success:true,
+//           token: 'Bearer ' + access_token });
+//     }
+// }});
 
 // Update a user, functional 
 router.put('/:id',  (req, res, next) => {

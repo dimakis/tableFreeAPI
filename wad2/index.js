@@ -5,26 +5,29 @@ import authRouter from "./api/users/index.js";
 import User from "./api/users/userModel.js";
 import tableRouter from './api/tables/index.js'
 import passport from './authenticate/index.js'
+import jwtDecode from 'jwt-decode'
 
+const helmet = require("helmet");
 //const { auth } = require ( 'express-openid-connect' )
 const cors = require('cors')
 const fs = require("file-system");
 const bodyParser = require("body-parser");
 const jwt = require("jsonwebtoken");
-const server = express();
+const app = express();
 
-server.use(bodyParser.json());
-server.use(bodyParser.urlencoded({ extended: true }));
-server.use(bodyParser.urlencoded());
-server.use(cors());
-// server.use(auth());
-server.use(passport.initialize())
-// server.use(passport)
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded());
+app.use(cors());
+// app.use(auth());
+app.use(passport.initialize())
+app.use(helmet())
+// app.use(passport)
 dotenv.config();
 
 const port = process.env.PORT;
-// Configure our HTTP server to respond with Hello World to all requests.
-// const server = http.createServer((req, res) => {
+// Configure our HTTP app to respond with Hello World to all requests.
+// const app = http.createServer((req, res) => {
 //   res.writeHead(200);
 //   res.end('Hello  World!');
 // });
@@ -60,14 +63,14 @@ async function isAuthenticated(email, password) {
 // }
 
 // fully functioning
-// server.post("/auth/login", (req, res) => {
+// app.post("/auth/login", (req, res) => {
 //     // let obj = JSON.parse({req})
 
 //     // const { email, password } = req
 //     const email = req.body.email;
 //     const password = req.body.password;
-//     console.log("@server, post body.email: " + req.body.email);
-//     // console.log("@server, isAuthenticated: " + isAuthenticated(email,password));
+//     console.log("@app, post body.email: " + req.body.email);
+//     // console.log("@app, isAuthenticated: " + isAuthenticated(email,password));
 
 //     if (isAuthenticated(email, password) === false) {
 //         const status = 401;
@@ -77,17 +80,17 @@ async function isAuthenticated(email, password) {
 //     } else {
 //         const user = User.findByEmail(email);
 //         const token = Buffer.from(email + 'utf8').toString('base64')
-//         console.log("@server, token: " + token);
+//         console.log("@app, token: " + token);
 //         const access_token = jwt.sign({token}, SECRET_KEY, {expiresIn} )
 //         // const access_token = createToken()   //email); //, password);
-//         // console.log('@server, token: ' + json({access_token}))
+//         // console.log('@app, token: ' + json({access_token}))
 //         res.status(200).json({ access_token });
 //     }
 // });
 
 
 
-// server.use(/^(?!\/auth).*$/,  (req, res, next) => {
+// app.use(/^(?!\/auth).*$/,  (req, res, next) => {
 //   if (req.headers.authorization === undefined || req.headers.authorization.split(' ')[0] !== 'Bearer') {
 //     const status = 400
 //     const message = 'Bad authorization header'
@@ -104,19 +107,19 @@ async function isAuthenticated(email, password) {
 //   }
 // })
 
-// server.use(router)
+// app.use(router)
 
 // ######### fin old code
-// server.use('/', authRouter)
-server.use('/', authRouter)
+// app.use('/', authRouter)
+app.use('/', authRouter)
 
 
-server.use('/',tableRouter)// passport.authenticate('jwt', { session: false }), tableRouter);
+app.use('/', passport.authenticate('jwt', { session: false }), tableRouter);
 // next line is how code should be once its all split up
-server.use(express.static('public'));
+app.use(express.static('public'));
 // next line is for trusting the proxy for https
-// server.set('trust proxy', true);
-server.listen(port, () => {
+// app.set('trust proxy', true);
+app.listen(port, () => {
     // Put a friendly message on the terminal
     console.info(`Server running at ${port}`);
 });

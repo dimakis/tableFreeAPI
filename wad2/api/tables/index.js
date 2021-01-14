@@ -6,7 +6,6 @@ const router = express.Router()
 router.get('/tables', async (req, res, next) => {
     await Table.getTables().catch(next).then(tables => res.status(200).json(tables)
     )
-    console.log('@tables.index, tables:' + tables)
 })
 
 router.post('/addtable', async ( req, res, next ) => {
