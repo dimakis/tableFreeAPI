@@ -57,12 +57,20 @@ router.post('/auth/login', async (req, res, next) => {
   if (req.query.action === 'register') {
     console.log('@in register before User.create')
     await User.create(req.body).catch(next);
+    try{
     console.log('@in register')
     res.status(201).json({
       code: 201,
       msg: 'Successful created new user.',
     });
-  } else {
+    } catch (error) {
+      return res.status(401).json({
+      code:401,
+      message:'Error creating user' + error
+
+    })
+      
+  }} else {
     const user = await User.findByEmail(req.body.email).catch(next);
     console.log('@authenticate, user: ' + JSON.stringify(user))
     if (!user) return res.status(401).json({ code: 401, msg: 'Authentication failed. User not found.' });

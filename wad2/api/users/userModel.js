@@ -25,7 +25,7 @@ const UserSchema = new Schema({
   username: { type: String },
   status: { type: String },
   privilegeLevel: { 
-    type: String, 
+    type: Number, 
     required: [true, 'Please input valid privilege level, 0 is default'], 
     min:[0, 'Please enter correct privilege level: 0 (default) or higher'],  
     max:[3,  'Please enter correct privilege level: 0 (default) - 3=max privilege level' ]},
