@@ -22,11 +22,12 @@ app.use(cors());
 // app.use(auth());
 app.use(passport.initialize())
 app.use(helmet())
-// app.use(passport)
+
 dotenv.config();
 
 const port = process.env.PORT;
 
+// error handler
 const errHandler = (err, req, res, next) => {
   /* if the error in development then send stack trace to display whole error,
   if it's in production then just send error message  */
@@ -36,7 +37,7 @@ const errHandler = (err, req, res, next) => {
     res.status(500).send(`Error caught:\n ${err.stack} `);
 };
 
-
+// code for use with headers
 // app.use(/^(?!\/auth).*$/,  (req, res, next) => {
 //   if (req.headers.authorization === undefined || req.headers.authorization.split(' ')[0] !== 'Bearer') {
 //     const status = 400
@@ -54,11 +55,10 @@ const errHandler = (err, req, res, next) => {
 //   }
 // })
 
-// ######### fin old code
-// app.use('/', authRouter)
+// routes to users 
 app.use('/', authRouter)
 
-
+// routes to tables protected routes, with passport and jwt
 app.use('/', passport.authenticate('jwt', { session: false }), tableRouter);
 
 // use error handler

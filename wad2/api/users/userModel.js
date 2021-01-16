@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 
 const Schema = mongoose.Schema;
 
+// validates email format
 const validateEmail = function(email) {
     var re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     return re.test(email)
@@ -18,12 +19,9 @@ const UserSchema = new Schema({
         validate: [validateEmail, 'Please fill a valid email address'],
         match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
     },
-  password: { type: String, required: [true, 'Invalid password option'],min: 3 },
-  id: { type: String, required: false },
-  first_name: { type: String },
-  last_name: { type: String },
-  username: { type: String },
-  status: { type: String },
+  password: { type: String, required: true },
+  firstName: { type: String , required: true },
+  lastName: { type: String , required: true },
   privilegeLevel: { 
     type: Number, 
     required: [true, 'Please input valid privilege level, 0 is default'], 
@@ -41,15 +39,6 @@ UserSchema.statics.findByEmail = function (email) {
   return this.findOne({ email: email });
 };
 
-// comparePassword with bcrypt - comapre sync
-// UserSchema.methods.comparePassword = function (passw, cb) {
-//   bcrypt.compareSync(passw, this.password, (err, isMatch) => {
-//     if (err) {
-//       return cb(err);
-//     }
-//     cb(null, isMatch);
-//   });
-// };
 UserSchema.methods.comparePassword = function(plaintext, cb) {
   bcrypt.compare(plaintext, this.password, (err, isMatch) => {
     if (err) {
@@ -63,14 +52,6 @@ UserSchema.methods.comparePassword = function(plaintext, cb) {
 UserSchema.pre("save", function (next) {
   const user = this;
   if (this.isModified("password") || this.isNew) {
-    // bcrypt.genSalt(10, (err, salt) => {
-    //   if (err) {
-    //     return next(err);
-    //   }
-    //   bcrypt.hash(user.password, salt, null, (err, hash) => {
-    //     if (err) {
-    //       return next(err);
-    //     }    
       bcrypt.hash(user.password, 10, function(err, hash) {
       if (err) {
         return next(err);
@@ -79,8 +60,6 @@ UserSchema.pre("save", function (next) {
         next();
       }
       )}
-
-         // user.password = bcrypt.hashSync(user.password, 10);
    else {
     return next();
   }
