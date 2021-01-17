@@ -2,11 +2,10 @@ import dotenv from "dotenv";
 import express from "express";
 import "./db.js";
 import authRouter from "./api/users/index.js";
-import User from "./api/users/userModel.js";
 import tableRouter from './api/tables/index.js'
 import passport from './authenticate/index.js'
 import jwtDecode from 'jwt-decode'
-
+import isAdmin from './authenticate/isAdmin.js'
 const helmet = require("helmet");
 //const { auth } = require ( 'express-openid-connect' )
 const cors = require('cors')
@@ -22,7 +21,7 @@ app.use(cors());
 // app.use(auth());
 app.use(passport.initialize())
 app.use(helmet())
-
+// app.use(isAdmin())
 dotenv.config();
 
 const port = process.env.PORT;
@@ -67,6 +66,13 @@ app.use(errHandler)
 app.use(express.static('public'));
 // next line is for trusting the proxy for https
 // app.set('trust proxy', true);
+//
+app.all('*', ( req, res, next ) => {
+    res.status(404).json({
+        status: 'fail',
+        message: `Can't find ${req.originalUrl} on this server!`
+    })
+})
 app.listen(port, () => {
     // Put a friendly message on the terminal
     console.info(`Server running at ${port}`);
