@@ -11,7 +11,9 @@ router.get('/tables', async (req, res, next) => {
 router.post('/addtable', async ( req, res, next ) => {
     // this next commented out block was my attempt at adding admin user only privileges to allow the addition of tables to the database
     console.log('@ addtable, req.body' + JSON.stringify(req.headers.authorization))
-    if (await !isAdmin(req, res, next)){
+    let auth = await isAdmin(req, res )
+    console.log('@ addtable, auth' +auth)
+    if ( !auth){
         res.status(401).json({
             code:401,
             message:'Admin access is needed for this functionality'

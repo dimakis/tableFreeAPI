@@ -37,8 +37,8 @@ const VenueSchema = new Schema({
       }]
 })
 
-VenueSchema.statics.findByTableName = function (tableName) {
-  return this.findOne({ tableName: tableName });
+VenueSchema.statics.findByVenueName = function (venueName) {
+  return this.findOne({ venueName: venueName });
 };
 
 export default mongoose.model("Venue", VenueSchema);

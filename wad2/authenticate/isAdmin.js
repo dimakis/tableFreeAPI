@@ -10,7 +10,7 @@ export default async function isAdmin ( req, res, next ) {
   let decoded = jwt.decode( authorization  )
   console.log('@admin, decoded: ' + decoded)
   const user = await User.findByEmail(decoded)
-  console.log('@admin, user:' + user.firstName)
+  console.log('@admin, user:' + user.privilegeLevel)
   if( user.privilegeLevel === 1 ) {
      return true;
   }

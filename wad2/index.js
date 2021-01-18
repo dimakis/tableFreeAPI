@@ -4,14 +4,10 @@ import "./db.js";
 import authRouter from "./api/users/index.js";
 import tableRouter from './api/tables/index.js'
 import passport from './authenticate/index.js'
-import jwtDecode from 'jwt-decode'
-import isAdmin from './authenticate/isAdmin.js'
 const helmet = require("helmet");
 //const { auth } = require ( 'express-openid-connect' )
 const cors = require('cors')
-const fs = require("file-system");
 const bodyParser = require("body-parser");
-const jwt = require("jsonwebtoken");
 const app = express();
 
 app.use(bodyParser.json());
